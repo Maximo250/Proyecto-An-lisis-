@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.42">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Trabajo Análisis Numérico: Medición Multidimensional de la Pobreza en México</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="Proyecto Anàlisis Nùmerico Final_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Proyecto Anàlisis Nùmerico Final_files/libs/quarto-html/quarto.js"></script>
+<script src="Proyecto Anàlisis Nùmerico Final_files/libs/quarto-html/popper.min.js"></script>
+<script src="Proyecto Anàlisis Nùmerico Final_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Proyecto Anàlisis Nùmerico Final_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Proyecto Anàlisis Nùmerico Final_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Proyecto Anàlisis Nùmerico Final_files/libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Proyecto Anàlisis Nùmerico Final_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Proyecto Anàlisis Nùmerico Final_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Proyecto Anàlisis Nùmerico Final_files/libs/bootstrap/bootstrap-1bc8a17f135ab3d594c857e9f48e611b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Trabajo Análisis Numérico: Medición Multidimensional de la Pobreza en México</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introducción" class="level1">
+<h1>Introducción</h1>
+<p>La medición de la pobreza es un tema central en la economía y las políticas públicas. En México, el Consejo Nacional de Evaluación de la Política de Desarrollo Social (CONEVAL) ha desarrollado una metodología multidimensional para identificar y cuantificar la pobreza, considerando tanto el ingreso como el acceso a derechos sociales fundamentales. Este trabajo tiene como objetivo replicar y explicar el cálculo de los principales indicadores sociales utilizados por CONEVAL, aplicando técnicas de análisis numérico y procesamiento de datos.</p>
+</section>
+<section id="metodología-de-coneval-para-la-medición-de-la-pobreza" class="level1">
+<h1>Metodología de CONEVAL para la Medición de la Pobreza</h1>
+<p>CONEVAL define la pobreza a partir de dos grandes dimensiones: - <strong>Bienestar económico</strong>: ingreso corriente per cápita del hogar. - <strong>Carencias sociales</strong>: rezago educativo, acceso a servicios de salud, acceso a seguridad social, calidad y espacios de la vivienda, acceso a servicios básicos en la vivienda y acceso a la alimentación.</p>
+<p>Una persona se considera en situación de pobreza cuando tiene un ingreso inferior a la línea de bienestar y presenta al menos una carencia social. La pobreza extrema se define por un umbral de ingreso aún menor y la presencia de al menos tres carencias sociales.</p>
+<p>A continuación, se describen y calculan cada uno de los indicadores sociales siguiendo la metodología de CONEVAL.</p>
+</section>
+<section id="rezago-educativo" class="level1">
+<h1>1. Rezago Educativo</h1>
+<section id="teoría" class="level2">
+<h2 class="anchored" data-anchor-id="teoría">Teoría</h2>
+<p>El rezago educativo se refiere a la proporción de la población que no ha alcanzado el nivel educativo esperado para su edad. Según CONEVAL, se considera en rezago educativo a: - Niños/as de 3 a 15 años que no asisten a la escuela y no han concluido la educación básica. - Personas de 16 años o más que no han concluido la educación secundaria.</p>
+<p><strong>Fórmula general:</strong></p>
+<p>Rezago educativo = 1 si la persona cumple los criterios anteriores, 0 en caso contrario.</p>
+<div id="b4e36643" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="c19c41bc" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># CONFIGURACIÓN DE RUTAS</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>BASE_DIR <span class="op">=</span> <span class="vs">r'C:/Users/maxim/OneDrive/Documentos/Análisis Númerico/Base final'</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>BASES_ORIG <span class="op">=</span> os.path.join(BASE_DIR, <span class="st">'Bases de datos'</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>BASES_GEN <span class="op">=</span> os.path.join(BASE_DIR, <span class="st">'Bases'</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>os.makedirs(BASES_GEN, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> cargar_csv(nombre_archivo):</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    path <span class="op">=</span> os.path.join(BASES_ORIG, nombre_archivo)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pd.read_csv(path, low_memory<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> guardar_csv(df, nombre_archivo):</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    path <span class="op">=</span> os.path.join(BASES_GEN, nombre_archivo)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    df.to_csv(path, index<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="4b913af0" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Lee tu archivo (ajusta la ruta y el nombre del archivo si es necesario)</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"C:/Users/maxim/OneDrive/Documentos/Análisis Númerico/Base final/pobreza22.csv"</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Cambia 'ic_rezedu' si la columna tiene otro nombre en tu archivo</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>columna <span class="op">=</span> <span class="st">"ic_rezedu"</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Cuenta personas con y sin carencia en rezago educativo</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>conteo <span class="op">=</span> df[columna].value_counts().sort_index()</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>conteo <span class="op">=</span> conteo.reindex([<span class="dv">0</span>, <span class="dv">1</span>], fill_value<span class="op">=</span><span class="dv">0</span>)  <span class="co"># Asegura que ambos valores aparezcan</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Gráfica de barras</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="dv">4</span>))</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>plt.bar([<span class="st">"Sin rezago educativo"</span>, <span class="st">"Con rezago educativo"</span>], conteo, color<span class="op">=</span>[<span class="st">"seagreen"</span>, <span class="st">"indianred"</span>])</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Rezago Educativo (CONEVAL)"</span>)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Número de personas"</span>)</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Condición"</span>)</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Proyecto%20Anàlisis%20Nùmerico%20Final_files/figure-html/cell-4-output-1.png" width="471" height="374" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="3fa2e4e6" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Rezago Educativo</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcula el indicador de rezago educativo según los criterios de CONEVAL.</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> indicador_rezago_educativo():</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    pobla <span class="op">=</span> cargar_csv(<span class="st">'poblacion.csv'</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> pobla.copy()</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    cols <span class="op">=</span> [<span class="st">'parentesco'</span>,<span class="st">'edad'</span>,<span class="st">'asis_esc'</span>,<span class="st">'nivelaprob'</span>,<span class="st">'gradoaprob'</span>,<span class="st">'antec_esc'</span>,<span class="st">'hablaind'</span>]</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> col <span class="kw">in</span> cols:</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> col <span class="kw">not</span> <span class="kw">in</span> df.columns:</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>            df[col] <span class="op">=</span> np.nan</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    df[cols] <span class="op">=</span> df[cols].<span class="bu">apply</span>(pd.to_numeric, errors<span class="op">=</span><span class="st">'coerce'</span>)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df[<span class="op">~</span>((df[<span class="st">'parentesco'</span>] <span class="op">&gt;=</span> <span class="dv">400</span>) <span class="op">&amp;</span> (df[<span class="st">'parentesco'</span>] <span class="op">&lt;</span> <span class="dv">500</span>) <span class="op">|</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>              (df[<span class="st">'parentesco'</span>] <span class="op">&gt;=</span> <span class="dv">700</span>) <span class="op">&amp;</span> (df[<span class="st">'parentesco'</span>] <span class="op">&lt;</span> <span class="dv">800</span>))]</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">'anac_e'</span>] <span class="op">=</span> <span class="dv">2022</span> <span class="op">-</span> df[<span class="st">'edad'</span>].fillna(<span class="dv">0</span>)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">'inas_esc'</span>] <span class="op">=</span> np.where(df[<span class="st">'asis_esc'</span>] <span class="op">==</span> <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">'niv_ed'</span>] <span class="op">=</span> np.nan</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    df.loc[(df[<span class="st">'nivelaprob'</span>] <span class="op">&lt;</span> <span class="dv">2</span>) <span class="op">|</span> ((df[<span class="st">'nivelaprob'</span>] <span class="op">==</span> <span class="dv">2</span>) <span class="op">&amp;</span> (df[<span class="st">'gradoaprob'</span>] <span class="op">&lt;</span> <span class="dv">6</span>)), <span class="st">'niv_ed'</span>] <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    df.loc[((df[<span class="st">'nivelaprob'</span>] <span class="op">==</span> <span class="dv">2</span>) <span class="op">&amp;</span> (df[<span class="st">'gradoaprob'</span>] <span class="op">==</span> <span class="dv">6</span>)) <span class="op">|</span> ((df[<span class="st">'nivelaprob'</span>] <span class="op">==</span> <span class="dv">3</span>) <span class="op">&amp;</span> (df[<span class="st">'gradoaprob'</span>] <span class="op">&lt;</span> <span class="dv">3</span>)), <span class="st">'niv_ed'</span>] <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    df.loc[((df[<span class="st">'nivelaprob'</span>] <span class="op">==</span> <span class="dv">3</span>) <span class="op">&amp;</span> (df[<span class="st">'gradoaprob'</span>] <span class="op">==</span> <span class="dv">3</span>)) <span class="op">|</span> ((df[<span class="st">'nivelaprob'</span>] <span class="op">==</span> <span class="dv">4</span>) <span class="op">&amp;</span> (df[<span class="st">'gradoaprob'</span>] <span class="op">&lt;</span> <span class="dv">3</span>)), <span class="st">'niv_ed'</span>] <span class="op">=</span> <span class="dv">2</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    df.loc[(df[<span class="st">'nivelaprob'</span>] <span class="op">&gt;=</span> <span class="dv">4</span>) <span class="op">&amp;</span> (<span class="op">~</span>df[<span class="st">'nivelaprob'</span>].isna()), <span class="st">'niv_ed'</span>] <span class="op">=</span> <span class="dv">3</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">'ic_rezedu'</span>] <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    df.loc[(df[<span class="st">'edad'</span>] <span class="op">&gt;=</span> <span class="dv">6</span>) <span class="op">&amp;</span> (df[<span class="st">'niv_ed'</span>] <span class="op">&lt;</span> <span class="dv">2</span>), <span class="st">'ic_rezedu'</span>] <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">'hli'</span>] <span class="op">=</span> np.where((df[<span class="st">'hablaind'</span>] <span class="op">==</span> <span class="dv">1</span>) <span class="op">&amp;</span> (df[<span class="st">'edad'</span>] <span class="op">&gt;=</span> <span class="dv">3</span>), <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Asegura columnas clave para merge posterior</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> col <span class="kw">in</span> [<span class="st">'folioviv'</span>, <span class="st">'foliohog'</span>, <span class="st">'numren'</span>]:</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> col <span class="kw">not</span> <span class="kw">in</span> df.columns:</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>            df[col] <span class="op">=</span> np.nan</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>    guardar_csv(df, <span class="st">'ic_rezedu22.csv'</span>)</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="acceso-a-servicios-de-salud" class="level1">
+<h1>2. Acceso a Servicios de Salud</h1>
+<section id="teoría-1" class="level2">
+<h2 class="anchored" data-anchor-id="teoría-1">Teoría</h2>
+<p>El acceso a servicios de salud es una carencia social que identifica a las personas que no cuentan con afiliación o derecho a recibir servicios médicos en instituciones públicas o privadas.</p>
+<p><strong>Fórmula general:</strong></p>
+<p>Carencia de acceso a salud = 1 si la persona no tiene afiliación, 0 en caso contrario.</p>
+<div id="3135d908" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Lee tu archivo (ajusta la ruta y el nombre del archivo si es necesario)</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"C:/Users/maxim/OneDrive/Documentos/Análisis Númerico/Base final/pobreza22.csv"</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Cambia 'ic_asalud' si la columna tiene otro nombre en tu archivo</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>columna <span class="op">=</span> <span class="st">"ic_asalud"</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Cuenta personas con y sin carencia en acceso a servicios de salud</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>conteo <span class="op">=</span> df[columna].value_counts().sort_index()</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>conteo <span class="op">=</span> conteo.reindex([<span class="dv">0</span>, <span class="dv">1</span>], fill_value<span class="op">=</span><span class="dv">0</span>)  <span class="co"># Asegura que ambos valores aparezcan</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Gráfica de barras</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="dv">4</span>))</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>plt.bar([<span class="st">"Sin carencia de salud"</span>, <span class="st">"Con carencia de salud"</span>], conteo, color<span class="op">=</span>[<span class="st">"seagreen"</span>, <span class="st">"indianred"</span>])</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Acceso a Servicios de Salud (CONEVAL)"</span>)</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Número de personas"</span>)</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Condición"</span>)</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Proyecto%20Anàlisis%20Nùmerico%20Final_files/figure-html/cell-6-output-1.png" width="471" height="374" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="65eddbb5" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Salud</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> indicador_salud():</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    pobla <span class="op">=</span> cargar_csv(<span class="st">'poblacion.csv'</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> pobla.copy()</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df[<span class="op">~</span>((df[<span class="st">'parentesco'</span>] <span class="op">&gt;=</span> <span class="dv">400</span>) <span class="op">&amp;</span> (df[<span class="st">'parentesco'</span>] <span class="op">&lt;</span> <span class="dv">500</span>) <span class="op">|</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>              (df[<span class="st">'parentesco'</span>] <span class="op">&gt;=</span> <span class="dv">700</span>) <span class="op">&amp;</span> (df[<span class="st">'parentesco'</span>] <span class="op">&lt;</span> <span class="dv">800</span>))]</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Ejemplo: acceso a salud, ajústalo a tus variables reales</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="st">'serv_salud'</span> <span class="kw">in</span> df.columns:</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>        df[<span class="st">'ic_asalud'</span>] <span class="op">=</span> np.where(df[<span class="st">'serv_salud'</span>] <span class="op">==</span> <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>        df[<span class="st">'ic_asalud'</span>] <span class="op">=</span> <span class="dv">0</span>  <span class="co"># Default si no hay variable</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> col <span class="kw">in</span> [<span class="st">'folioviv'</span>, <span class="st">'foliohog'</span>, <span class="st">'numren'</span>]:</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> col <span class="kw">not</span> <span class="kw">in</span> df.columns:</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>            df[col] <span class="op">=</span> np.nan</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    guardar_csv(df, <span class="st">'ic_asalud22.csv'</span>)</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="seguridad-social" class="level1">
+<h1>3. Seguridad Social</h1>
+<section id="teoría-2" class="level2">
+<h2 class="anchored" data-anchor-id="teoría-2">Teoría</h2>
+<p>La seguridad social es un derecho que debe garantizar el acceso a servicios de salud, protección ante riesgos laborales, y prestaciones económicas y sociales. La carencia de seguridad social se refiere a la falta de acceso a estos beneficios.</p>
+<p><strong>Fórmula general:</strong></p>
+<p>Carencia de seguridad social = 1 si la persona no tiene acceso a seguridad social, 0 en caso contrario.</p>
+<div id="ef74b284" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Lee tu archivo (ajusta la ruta y el nombre del archivo si es necesario)</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"C:/Users/maxim/OneDrive/Documentos/Análisis Númerico/Base final/pobreza22.csv"</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Cambia 'ic_segsoc' si la columna tiene otro nombre en tu archivo</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>columna <span class="op">=</span> <span class="st">"ic_segsoc"</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Cuenta personas con y sin carencia en seguridad social</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>conteo <span class="op">=</span> df[columna].value_counts().sort_index()</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>conteo <span class="op">=</span> conteo.reindex([<span class="dv">0</span>, <span class="dv">1</span>], fill_value<span class="op">=</span><span class="dv">0</span>)  <span class="co"># Asegura que ambos valores aparezcan</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Gráfica de barras</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="dv">4</span>))</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>plt.bar([<span class="st">"Sin carencia de seg. social"</span>, <span class="st">"Con carencia de seg. social"</span>], conteo, color<span class="op">=</span>[<span class="st">"seagreen"</span>, <span class="st">"indianred"</span>])</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Seguridad Social (CONEVAL)"</span>)</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Número de personas"</span>)</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Condición"</span>)</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Proyecto%20Anàlisis%20Nùmerico%20Final_files/figure-html/cell-8-output-1.png" width="471" height="374" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="bbc7589b" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Seguridad Social</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> indicador_seguridad_social():</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    pobla <span class="op">=</span> cargar_csv(<span class="st">'poblacion.csv'</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> pobla.copy()</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df[<span class="op">~</span>((df[<span class="st">'parentesco'</span>] <span class="op">&gt;=</span> <span class="dv">400</span>) <span class="op">&amp;</span> (df[<span class="st">'parentesco'</span>] <span class="op">&lt;</span> <span class="dv">500</span>) <span class="op">|</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>              (df[<span class="st">'parentesco'</span>] <span class="op">&gt;=</span> <span class="dv">700</span>) <span class="op">&amp;</span> (df[<span class="st">'parentesco'</span>] <span class="op">&lt;</span> <span class="dv">800</span>))]</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Ejemplo: carencia si no tiene seguridad social; ajusta a tu variable real</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="st">'seg_social'</span> <span class="kw">in</span> df.columns:</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>        df[<span class="st">'ic_segsoc'</span>] <span class="op">=</span> np.where(df[<span class="st">'seg_social'</span>] <span class="op">==</span> <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>        df[<span class="st">'ic_segsoc'</span>] <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> col <span class="kw">in</span> [<span class="st">'folioviv'</span>, <span class="st">'foliohog'</span>, <span class="st">'numren'</span>]:</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> col <span class="kw">not</span> <span class="kw">in</span> df.columns:</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>            df[col] <span class="op">=</span> np.nan</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    guardar_csv(df, <span class="st">'ic_segsoc22.csv'</span>)</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="calidad-y-espacios-de-la-vivienda" class="level1">
+<h1>4. Calidad y Espacios de la Vivienda</h1>
+<section id="teoría-3" class="level2">
+<h2 class="anchored" data-anchor-id="teoría-3">Teoría</h2>
+<p>La calidad y los espacios de la vivienda son fundamentales para el bienestar. Esta carencia se refiere a condiciones inadecuadas en la vivienda, como materiales de construcción deficientes o falta de espacio suficiente.</p>
+<p><strong>Fórmula general:</strong></p>
+<p>Carencia de calidad en la vivienda = 1 si la vivienda tiene condiciones inadecuadas, 0 en caso contrario.</p>
+<div id="f8073d87" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Lee tu archivo (ajusta la ruta y el nombre del archivo si es necesario)</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"C:/Users/maxim/OneDrive/Documentos/Análisis Númerico/Base final/pobreza22.csv"</span>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Cambia 'ic_cv' si la columna tiene otro nombre en tu archivo</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>columna <span class="op">=</span> <span class="st">"ic_cv"</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Cuenta personas/hogares con y sin carencia en calidad y espacios de vivienda</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>conteo <span class="op">=</span> df[columna].value_counts().sort_index()</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>conteo <span class="op">=</span> conteo.reindex([<span class="dv">0</span>, <span class="dv">1</span>], fill_value<span class="op">=</span><span class="dv">0</span>)  <span class="co"># Asegura que ambos valores aparezcan</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Gráfica de barras</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="dv">4</span>))</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>plt.bar([<span class="st">"Sin carencia de vivienda"</span>, <span class="st">"Con carencia de vivienda"</span>], conteo, color<span class="op">=</span>[<span class="st">"seagreen"</span>, <span class="st">"indianred"</span>])</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Calidad y Espacios de la Vivienda (CONEVAL)"</span>)</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Número de personas"</span>)</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Condición"</span>)</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Proyecto%20Anàlisis%20Nùmerico%20Final_files/figure-html/cell-10-output-1.png" width="471" height="374" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="359b1fce" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Calidad y Espacios de la Vivienda</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> indicador_calidad_vivienda():</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    viviendas <span class="op">=</span> cargar_csv(<span class="st">'viviendas.csv'</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    concen <span class="op">=</span> cargar_csv(<span class="st">'concentradohogar.csv'</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Si falta 'foliohog', mézclalo</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="st">'foliohog'</span> <span class="kw">not</span> <span class="kw">in</span> viviendas.columns:</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>        viviendas <span class="op">=</span> viviendas.merge(concen[[<span class="st">'folioviv'</span>, <span class="st">'foliohog'</span>]], on<span class="op">=</span><span class="st">'folioviv'</span>, how<span class="op">=</span><span class="st">'left'</span>)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> viviendas.copy()</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Carencia si piso es de tierra (ajusta a tu variable)</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="st">'mat_pisos'</span> <span class="kw">in</span> df.columns:</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>        df[<span class="st">'ic_cv'</span>] <span class="op">=</span> np.where(df[<span class="st">'mat_pisos'</span>] <span class="op">==</span> <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>        df[<span class="st">'ic_cv'</span>] <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    guardar_csv(df, <span class="st">'ic_cev22.csv'</span>)</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="servicios-básicos-de-la-vivienda" class="level1">
+<h1>5. Servicios Básicos de la Vivienda</h1>
+<section id="teoría-4" class="level2">
+<h2 class="anchored" data-anchor-id="teoría-4">Teoría</h2>
+<p>El acceso a servicios básicos en la vivienda, como agua potable, electricidad y drenaje, es esencial para una vida digna. La carencia de estos servicios se considera una privación importante.</p>
+<p><strong>Fórmula general:</strong></p>
+<p>Carencia de servicios básicos = 1 si la vivienda no cuenta con servicios básicos, 0 en caso contrario.</p>
+<div id="4218d57f" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Lee tu archivo (ajusta la ruta y el nombre del archivo si es necesario)</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"C:/Users/maxim/OneDrive/Documentos/Análisis Númerico/Base final/pobreza22.csv"</span>)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Cambia 'ic_sbv' si la columna tiene otro nombre en tu archivo</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>columna <span class="op">=</span> <span class="st">"ic_sbv"</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Cuenta personas/hogares con y sin carencia en servicios básicos de vivienda</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>conteo <span class="op">=</span> df[columna].value_counts().sort_index()</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>conteo <span class="op">=</span> conteo.reindex([<span class="dv">0</span>, <span class="dv">1</span>], fill_value<span class="op">=</span><span class="dv">0</span>)  <span class="co"># Asegura que ambos valores aparezcan</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Gráfica de barras</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="dv">4</span>))</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>plt.bar([<span class="st">"Sin carencia de serv. básicos"</span>, <span class="st">"Con carencia de serv. básicos"</span>], conteo, color<span class="op">=</span>[<span class="st">"seagreen"</span>, <span class="st">"indianred"</span>])</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Servicios Básicos de la Vivienda (CONEVAL)"</span>)</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Número de personas"</span>)</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Condición"</span>)</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Proyecto%20Anàlisis%20Nùmerico%20Final_files/figure-html/cell-12-output-1.png" width="472" height="374" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="7c667357" class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Servicios Básicos de la Vivienda</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> indicador_servicios_basicos():</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    viviendas <span class="op">=</span> cargar_csv(<span class="st">'viviendas.csv'</span>)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    concen <span class="op">=</span> cargar_csv(<span class="st">'concentradohogar.csv'</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="st">'foliohog'</span> <span class="kw">not</span> <span class="kw">in</span> viviendas.columns:</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>        viviendas <span class="op">=</span> viviendas.merge(concen[[<span class="st">'folioviv'</span>, <span class="st">'foliohog'</span>]], on<span class="op">=</span><span class="st">'folioviv'</span>, how<span class="op">=</span><span class="st">'left'</span>)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> viviendas.copy()</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Carencia si no tiene agua entubada (ajusta a tu variable)</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="st">'disp_agua'</span> <span class="kw">in</span> df.columns:</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>        df[<span class="st">'ic_sbv'</span>] <span class="op">=</span> np.where(df[<span class="st">'disp_agua'</span>] <span class="op">&lt;</span> <span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>        df[<span class="st">'ic_sbv'</span>] <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    guardar_csv(df, <span class="st">'ic_sbv22.csv'</span>)</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="alimentación" class="level1">
+<h1>6. Alimentación</h1>
+<section id="teoría-5" class="level2">
+<h2 class="anchored" data-anchor-id="teoría-5">Teoría</h2>
+<p>La inseguridad alimentaria se refiere a la falta de acceso regular a alimentos suficientes y nutritivos. Esta carencia es crítica, ya que la alimentación adecuada es fundamental para el desarrollo y bienestar.</p>
+<p><strong>Fórmula general:</strong></p>
+<p>Inseguridad alimentaria = 1 si la persona no tiene acceso seguro a alimentos, 0 en caso contrario.</p>
+<div id="c65109b3" class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Lee tu archivo (ajusta la ruta y el nombre del archivo si es necesario)</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"C:/Users/maxim/OneDrive/Documentos/Análisis Númerico/Base final/pobreza22.csv"</span>)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Cambia 'ic_ali_nc' si la columna tiene otro nombre en tu archivo</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>columna <span class="op">=</span> <span class="st">"ic_ali_nc"</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Cuenta personas/hogares con y sin carencia en alimentación</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>conteo <span class="op">=</span> df[columna].value_counts().sort_index()</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>conteo <span class="op">=</span> conteo.reindex([<span class="dv">0</span>, <span class="dv">1</span>], fill_value<span class="op">=</span><span class="dv">0</span>)  <span class="co"># Asegura que ambos valores aparezcan</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Gráfica de barras</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="dv">4</span>))</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>plt.bar([<span class="st">"Sin carencia de alimentación"</span>, <span class="st">"Con carencia de alimentación"</span>], conteo, color<span class="op">=</span>[<span class="st">"seagreen"</span>, <span class="st">"indianred"</span>])</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Acceso a la Alimentación (CONEVAL)"</span>)</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Número de personas"</span>)</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Condición"</span>)</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Proyecto%20Anàlisis%20Nùmerico%20Final_files/figure-html/cell-14-output-1.png" width="472" height="374" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="626364e7" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 6. Alimentación</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> indicador_alimentacion():</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    hogares <span class="op">=</span> cargar_csv(<span class="st">'hogares.csv'</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Si faltan folios, los añade como NaN para evitar errores de merge</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> col <span class="kw">in</span> [<span class="st">'folioviv'</span>, <span class="st">'foliohog'</span>]:</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> col <span class="kw">not</span> <span class="kw">in</span> hogares.columns:</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>            hogares[col] <span class="op">=</span> np.nan</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> hogares.copy()</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Inseguridad alimentaria, ajusta a tu variable</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="st">'acc_alim4'</span> <span class="kw">in</span> df.columns:</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>        df[<span class="st">'ic_ali_nc'</span>] <span class="op">=</span> np.where(df[<span class="st">'acc_alim4'</span>] <span class="op">==</span> <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>        df[<span class="st">'ic_ali_nc'</span>] <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>    guardar_csv(df, <span class="st">'ic_ali22.csv'</span>)</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="ingresos-y-bienestar-económico" class="level1">
+<h1>7. Ingresos y bienestar económico</h1>
+<section id="teoría-6" class="level2">
+<h2 class="anchored" data-anchor-id="teoría-6">Teoría</h2>
+<p>El bienestar económico se evalúa a través del ingreso corriente per cápita del hogar. Un ingreso bajo en relación con el costo de la canasta básica indica una situación de pobreza.</p>
+<p><strong>Fórmula general:</strong></p>
+<p>Pobreza por ingresos = 1 si el ingreso per cápita es inferior al umbral de pobreza, 0 en caso contrario.</p>
+<div id="d4bce7d7" class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Lee tu archivo (ajusta la ruta y el nombre del archivo si es necesario)</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"C:/Users/maxim/OneDrive/Documentos/Análisis Númerico/Base final/pobreza22.csv"</span>)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Asegúrate de que 'ictpc' sea la columna correcta</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>columna <span class="op">=</span> <span class="st">"ictpc"</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Histograma</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">5</span>))</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>plt.hist(df[columna].dropna(), bins<span class="op">=</span><span class="dv">30</span>, color<span class="op">=</span><span class="st">"royalblue"</span>, edgecolor<span class="op">=</span><span class="st">"black"</span>)</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Distribución del Ingreso Corriente Total Per Cápita (ICTPC)"</span>)</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"ICTPC"</span>)</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Número de personas/hogares"</span>)</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Proyecto%20Anàlisis%20Nùmerico%20Final_files/figure-html/cell-16-output-1.png" width="663" height="470" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="e723f9d0" class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 7. Ingresos y bienestar económico</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> indicador_ingresos():</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    concen <span class="op">=</span> cargar_csv(<span class="st">'concentradohogar.csv'</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Checa si existen las columnas clave</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> col <span class="kw">in</span> [<span class="st">'folioviv'</span>, <span class="st">'foliohog'</span>, <span class="st">'tot_integ'</span>]:</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> col <span class="kw">not</span> <span class="kw">in</span> concen.columns:</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>            concen[col] <span class="op">=</span> np.nan</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> concen.copy()</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Ejemplo: pon aquí tu propio cálculo de ingreso total y per cápita</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="st">'ict'</span> <span class="kw">not</span> <span class="kw">in</span> df.columns:</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>        df[<span class="st">'ict'</span>] <span class="op">=</span> <span class="dv">10000</span>  <span class="co"># Simulación, reemplazar por tu cálculo real</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="st">'tamhogesc'</span> <span class="kw">not</span> <span class="kw">in</span> df.columns:</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>        df[<span class="st">'tamhogesc'</span>] <span class="op">=</span> df[<span class="st">'tot_integ'</span>]</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">'ictpc'</span>] <span class="op">=</span> df[<span class="st">'ict'</span>] <span class="op">/</span> df[<span class="st">'tamhogesc'</span>]</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>    guardar_csv(df, <span class="st">'p_ingresos22.csv'</span>)</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="integración-de-indicadores-y-medición-de-la-pobreza" class="level1">
+<h1>8. Integración de Indicadores y Medición de la Pobreza</h1>
+<section id="teoría-7" class="level2">
+<h2 class="anchored" data-anchor-id="teoría-7">Teoría</h2>
+<p>La medición multidimensional de la pobreza, según CONEVAL, integra tanto el ingreso como las carencias sociales. Una persona se considera en situación de pobreza cuando: - Su ingreso es menor a la línea de bienestar (umbral de pobreza por ingresos). - Presenta al menos una carencia social de las seis consideradas.</p>
+<p>La pobreza extrema se define cuando el ingreso es menor a la línea de bienestar mínima y se presentan al menos tres carencias sociales.</p>
+<p><strong>Fórmula general:</strong></p>
+<p>Pobreza = 1 si (Ingreso &lt; Línea de bienestar) y (número de carencias ≥ 2), 0 en caso contrario.</p>
+<div id="2a5ec52d" class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Lee el archivo (ajusta la ruta)</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"C:/Users/maxim/OneDrive/Documentos/Análisis Númerico/Base final/pobreza22.csv"</span>)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Define las columnas de carencias</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>carencias <span class="op">=</span> [<span class="st">"ic_rezedu"</span>, <span class="st">"ic_asalud"</span>, <span class="st">"ic_segsoc"</span>, <span class="st">"ic_cv"</span>, <span class="st">"ic_sbv"</span>, <span class="st">"ic_ali_nc"</span>]</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Calcula el número de carencias por persona/hogar</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"num_carencias"</span>] <span class="op">=</span> df[carencias].<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Define el umbral de pobreza por ingresos (modifica según tus datos)</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>umbral_pobreza <span class="op">=</span> <span class="dv">3000</span>  <span class="co"># Cambia este valor por el correcto para tu contexto</span></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"pobreza_ingresos"</span>] <span class="op">=</span> (df[<span class="st">"ictpc"</span>] <span class="op">&lt;</span> umbral_pobreza).astype(<span class="bu">int</span>)</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Clasificación multidimensional tipo CONEVAL</span></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> clasificacion(row):</span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> row[<span class="st">"pobreza_ingresos"</span>] <span class="op">==</span> <span class="dv">1</span> <span class="kw">and</span> row[<span class="st">"num_carencias"</span>] <span class="op">&gt;=</span> <span class="dv">1</span>:</span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">"Pobreza multidimensional"</span></span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> row[<span class="st">"pobreza_ingresos"</span>] <span class="op">==</span> <span class="dv">1</span> <span class="kw">and</span> row[<span class="st">"num_carencias"</span>] <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">"Vulnerable por ingresos"</span></span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> row[<span class="st">"pobreza_ingresos"</span>] <span class="op">==</span> <span class="dv">0</span> <span class="kw">and</span> row[<span class="st">"num_carencias"</span>] <span class="op">&gt;=</span> <span class="dv">1</span>:</span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">"Vulnerable por carencias"</span></span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">"No pobre y no vulnerable"</span></span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"clasificacion_pobreza"</span>] <span class="op">=</span> df.<span class="bu">apply</span>(clasificacion, axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a><span class="co"># 6. Resumen y gráfica</span></span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a>conteo <span class="op">=</span> df[<span class="st">"clasificacion_pobreza"</span>].value_counts().reindex([</span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Pobreza multidimensional"</span>,</span>
+<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Vulnerable por ingresos"</span>,</span>
+<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Vulnerable por carencias"</span>,</span>
+<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a>    <span class="st">"No pobre y no vulnerable"</span></span>
+<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a>], fill_value<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb17-36"><a href="#cb17-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-37"><a href="#cb17-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Imprime resumen</span></span>
+<span id="cb17-38"><a href="#cb17-38" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(conteo)</span>
+<span id="cb17-39"><a href="#cb17-39" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Porcentajes:"</span>)</span>
+<span id="cb17-40"><a href="#cb17-40" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>((conteo <span class="op">/</span> conteo.<span class="bu">sum</span>() <span class="op">*</span> <span class="dv">100</span>).<span class="bu">round</span>(<span class="dv">2</span>))</span>
+<span id="cb17-41"><a href="#cb17-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-42"><a href="#cb17-42" aria-hidden="true" tabindex="-1"></a><span class="co"># Grafica</span></span>
+<span id="cb17-43"><a href="#cb17-43" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
+<span id="cb17-44"><a href="#cb17-44" aria-hidden="true" tabindex="-1"></a>conteo.plot(kind<span class="op">=</span><span class="st">"bar"</span>, color<span class="op">=</span>[<span class="st">"crimson"</span>, <span class="st">"orange"</span>, <span class="st">"skyblue"</span>, <span class="st">"limegreen"</span>])</span>
+<span id="cb17-45"><a href="#cb17-45" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Clasificación Multidimensional de la Pobreza"</span>)</span>
+<span id="cb17-46"><a href="#cb17-46" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Número de personas/hogares"</span>)</span>
+<span id="cb17-47"><a href="#cb17-47" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Categoría"</span>)</span>
+<span id="cb17-48"><a href="#cb17-48" aria-hidden="true" tabindex="-1"></a>plt.xticks(rotation<span class="op">=</span><span class="dv">20</span>)</span>
+<span id="cb17-49"><a href="#cb17-49" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb17-50"><a href="#cb17-50" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>clasificacion_pobreza
+Pobreza multidimensional     83874
+Vulnerable por ingresos       9198
+Vulnerable por carencias    125253
+No pobre y no vulnerable     91209
+Name: count, dtype: int64
+
+Porcentajes:
+clasificacion_pobreza
+Pobreza multidimensional    27.10
+Vulnerable por ingresos      2.97
+Vulnerable por carencias    40.47
+No pobre y no vulnerable    29.47
+Name: count, dtype: float64</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Proyecto%20Anàlisis%20Nùmerico%20Final_files/figure-html/cell-18-output-2.png" width="751" height="470" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="646fafa4" class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Integración de indicadores y cálculo de pobreza multidimensional</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Une los indicadores y determina la condición de pobreza según CONEVAL.</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> indicador_pobreza():</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Carga los resultados de los indicadores</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    rezedu <span class="op">=</span> pd.read_csv(os.path.join(BASES_GEN, <span class="st">'ic_rezedu22.csv'</span>))</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    salud <span class="op">=</span> pd.read_csv(os.path.join(BASES_GEN, <span class="st">'ic_asalud22.csv'</span>))</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    segsoc <span class="op">=</span> pd.read_csv(os.path.join(BASES_GEN, <span class="st">'ic_segsoc22.csv'</span>))</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    cev <span class="op">=</span> pd.read_csv(os.path.join(BASES_GEN, <span class="st">'ic_cev22.csv'</span>))</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    sbv <span class="op">=</span> pd.read_csv(os.path.join(BASES_GEN, <span class="st">'ic_sbv22.csv'</span>))</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    ali <span class="op">=</span> pd.read_csv(os.path.join(BASES_GEN, <span class="st">'ic_ali22.csv'</span>))</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    ingresos <span class="op">=</span> pd.read_csv(os.path.join(BASES_GEN, <span class="st">'p_ingresos22.csv'</span>))</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> df <span class="kw">in</span> [rezedu, salud, segsoc]:</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>        df.drop_duplicates(subset<span class="op">=</span>[<span class="st">'folioviv'</span>, <span class="st">'foliohog'</span>, <span class="st">'numren'</span>], inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> df <span class="kw">in</span> [cev, sbv, ali, ingresos]:</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>        df.drop_duplicates(subset<span class="op">=</span>[<span class="st">'folioviv'</span>, <span class="st">'foliohog'</span>], inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Merge a nivel persona</span></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> rezedu.merge(salud, on<span class="op">=</span>[<span class="st">'folioviv'</span>,<span class="st">'foliohog'</span>,<span class="st">'numren'</span>], how<span class="op">=</span><span class="st">'left'</span>, suffixes<span class="op">=</span>(<span class="st">''</span>,<span class="st">'_salud'</span>))</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.merge(segsoc, on<span class="op">=</span>[<span class="st">'folioviv'</span>,<span class="st">'foliohog'</span>,<span class="st">'numren'</span>], how<span class="op">=</span><span class="st">'left'</span>, suffixes<span class="op">=</span>(<span class="st">''</span>,<span class="st">'_segsoc'</span>))</span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Para los hogares, después agregas los indicadores a nivel hogar</span></span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.merge(cev, on<span class="op">=</span>[<span class="st">'folioviv'</span>,<span class="st">'foliohog'</span>], how<span class="op">=</span><span class="st">'left'</span>, suffixes<span class="op">=</span>(<span class="st">''</span>,<span class="st">'_cev'</span>))</span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.merge(sbv, on<span class="op">=</span>[<span class="st">'folioviv'</span>,<span class="st">'foliohog'</span>], how<span class="op">=</span><span class="st">'left'</span>, suffixes<span class="op">=</span>(<span class="st">''</span>,<span class="st">'_sbv'</span>))</span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.merge(ali, on<span class="op">=</span>[<span class="st">'folioviv'</span>,<span class="st">'foliohog'</span>], how<span class="op">=</span><span class="st">'left'</span>, suffixes<span class="op">=</span>(<span class="st">''</span>,<span class="st">'_ali'</span>))</span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.merge(ingresos, on<span class="op">=</span>[<span class="st">'folioviv'</span>,<span class="st">'foliohog'</span>], how<span class="op">=</span><span class="st">'left'</span>, suffixes<span class="op">=</span>(<span class="st">''</span>,<span class="st">'_ing'</span>))</span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Asegura que todas las columnas de carencias existan y sean numéricas</span></span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a>    carencias <span class="op">=</span> []</span>
+<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> col <span class="kw">in</span> [<span class="st">'ic_rezedu'</span>, <span class="st">'ic_asalud'</span>, <span class="st">'ic_segsoc'</span>, <span class="st">'ic_cv'</span>, <span class="st">'ic_sbv'</span>, <span class="st">'ic_ali_nc'</span>]:</span>
+<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> col <span class="kw">in</span> df.columns:</span>
+<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a>            carencias.append(col)</span>
+<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb19-34"><a href="#cb19-34" aria-hidden="true" tabindex="-1"></a>            df[col] <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb19-35"><a href="#cb19-35" aria-hidden="true" tabindex="-1"></a>            carencias.append(col)</span>
+<span id="cb19-36"><a href="#cb19-36" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">'n_carencias'</span>] <span class="op">=</span> df[carencias].<span class="bu">apply</span>(pd.to_numeric, errors<span class="op">=</span><span class="st">"coerce"</span>).<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb19-37"><a href="#cb19-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="st">'ictpc'</span> <span class="kw">not</span> <span class="kw">in</span> df.columns:</span>
+<span id="cb19-38"><a href="#cb19-38" aria-hidden="true" tabindex="-1"></a>        df[<span class="st">'ictpc'</span>] <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb19-39"><a href="#cb19-39" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">'pobreza'</span>] <span class="op">=</span> np.where((df[<span class="st">'ictpc'</span>] <span class="op">&lt;</span> <span class="dv">3000</span>) <span class="op">&amp;</span> (df[<span class="st">'n_carencias'</span>] <span class="op">&gt;=</span> <span class="dv">2</span>), <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb19-40"><a href="#cb19-40" aria-hidden="true" tabindex="-1"></a>    guardar_csv(df, <span class="st">'pobreza_final.csv'</span>)</span>
+<span id="cb19-41"><a href="#cb19-41" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="visualización-y-medición-de-la-desigualdad-índice-de-gini-y-theil" class="level1">
+<h1>9. Visualización y Medición de la Desigualdad: Índice de Gini y Theil</h1>
+<section id="teoría-8" class="level2">
+<h2 class="anchored" data-anchor-id="teoría-8">Teoría</h2>
+<p>La desigualdad en la distribución del ingreso es un aspecto fundamental en el análisis del bienestar social. Dos de los indicadores más utilizados para medir la desigualdad son el <strong>Índice de Gini</strong> y el <strong>Índice de Theil</strong>.</p>
+<section id="índice-de-gini" class="level3">
+<h3 class="anchored" data-anchor-id="índice-de-gini">Índice de Gini</h3>
+<p>El índice de Gini mide la desigualdad en la distribución del ingreso. Su valor varía entre 0 (igualdad perfecta) y 1 (desigualdad máxima). Se basa en la comparación de la curva de Lorenz (distribución acumulada del ingreso) con la línea de igualdad perfecta.</p>
+<p><strong>Fórmula general:</strong></p>
+<p>Gini =</p>
+<p><span class="math display">\[G = \frac{1}{2 n^2 \mu} \sum_{i=1}^{n} \sum_{j=1}^{n} |y_i - y_j|\]</span></p>
+<ul>
+<li><p>G = Índice de Gini</p></li>
+<li><p>n = Número de observaciones</p></li>
+<li><p>yi, = Ingreso (u otra variable) del individuo i y j</p></li>
+<li><p>μ = Media de los ingresos</p></li>
+</ul>
+<p>donde ( x_i ) es el ingreso de la persona i, n es el número de personas y ( ) es el ingreso medio.</p>
+</section>
+<section id="índice-de-theil" class="level3">
+<h3 class="anchored" data-anchor-id="índice-de-theil">Índice de Theil</h3>
+<p>El índice de Theil es una medida de entropía que evalúa la desigualdad considerando las diferencias relativas entre los ingresos individuales y el ingreso promedio. Un valor de 0 indica igualdad perfecta.</p>
+<p><strong>Fórmula general:</strong></p>
+<p><span class="math display">\[
+T = \frac{1}{n} \sum_{i=1}^{n} \frac{y_i}{\mu} \ln \left( \frac{y_i}{\mu} \right)
+\]</span></p>
+<ul>
+<li><p>T = Índice de Theil</p></li>
+<li><p>n = Número de observaciones</p></li>
+<li><p>yi = Ingreso del individuo</p></li>
+<li><p>μ = Media de los ingresos</p></li>
+<li><p>ln = Logaritmo natural</p></li>
+</ul>
+</section>
+</section>
+<section id="explicación-del-código" class="level2">
+<h2 class="anchored" data-anchor-id="explicación-del-código">Explicación del código</h2>
+<p>Los siguientes bloques de código calculan y visualizan la curva de Lorenz, el índice de Gini y el índice de Theil a partir del archivo CSV de ingresos per cápita generado previamente. Se utiliza matplotlib para graficar la curva de Lorenz y se imprime el valor de los índices calculados.</p>
+<div id="d1aea68f" class="cell" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Carga el archivo de ingresos</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajusta la ruta y el nombre de la columna si es necesario</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="vs">r'C:/Users/maxim/OneDrive/Documentos/Análisis Númerico/Base final/pobreza22.csv'</span>)</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df.columns)  <span class="co"># Verifica el nombre correcto de la columna de ingresos</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Usa la columna de ingreso per cápita (ajusta el nombre si es otro)</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>ingresos <span class="op">=</span> df[<span class="st">'ictpc'</span>].dropna().astype(<span class="bu">float</span>)</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>ingresos <span class="op">=</span> ingresos[ingresos <span class="op">&gt;</span> <span class="dv">0</span>]  <span class="co"># Elimina ingresos negativos o cero si los hay</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Función para índice de Gini</span></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> gini(array):</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>    array <span class="op">=</span> np.sort(array)</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>    n <span class="op">=</span> array.size</span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>    index <span class="op">=</span> np.arange(<span class="dv">1</span>, n <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> ((np.<span class="bu">sum</span>((<span class="dv">2</span> <span class="op">*</span> index <span class="op">-</span> n <span class="op">-</span> <span class="dv">1</span>) <span class="op">*</span> array)) <span class="op">/</span> (n <span class="op">*</span> np.<span class="bu">sum</span>(array)))</span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>gini_index <span class="op">=</span> gini(ingresos)</span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Índice de Gini: </span><span class="sc">{</span>gini_index<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Curva de Lorenz</span></span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> lorenz_curve(array):</span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>    array <span class="op">=</span> np.sort(array)</span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>    cum_income <span class="op">=</span> np.cumsum(array)</span>
+<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>    cum_income <span class="op">=</span> np.insert(cum_income, <span class="dv">0</span>, <span class="dv">0</span>)</span>
+<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a>    cum_income <span class="op">=</span> cum_income <span class="op">/</span> cum_income[<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> cum_income</span>
+<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a>lorenz <span class="op">=</span> lorenz_curve(ingresos)</span>
+<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="bu">len</span>(lorenz) <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="dv">1</span>, n <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb20-35"><a href="#cb20-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-36"><a href="#cb20-36" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
+<span id="cb20-37"><a href="#cb20-37" aria-hidden="true" tabindex="-1"></a>plt.plot(x, lorenz, drawstyle<span class="op">=</span><span class="st">'steps-post'</span>, label<span class="op">=</span><span class="st">'Curva de Lorenz'</span>)</span>
+<span id="cb20-38"><a href="#cb20-38" aria-hidden="true" tabindex="-1"></a>plt.plot([<span class="dv">0</span>, <span class="dv">1</span>], [<span class="dv">0</span>, <span class="dv">1</span>], <span class="st">'k--'</span>, label<span class="op">=</span><span class="st">'Igualdad perfecta'</span>)</span>
+<span id="cb20-39"><a href="#cb20-39" aria-hidden="true" tabindex="-1"></a>plt.fill_between(x, lorenz, x, color<span class="op">=</span><span class="st">"skyblue"</span>, alpha<span class="op">=</span><span class="fl">0.4</span>)</span>
+<span id="cb20-40"><a href="#cb20-40" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Proporción acumulada de la población'</span>)</span>
+<span id="cb20-41"><a href="#cb20-41" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Proporción acumulada del ingreso'</span>)</span>
+<span id="cb20-42"><a href="#cb20-42" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="ss">f'Curva de Lorenz y Gini (Gini = </span><span class="sc">{</span>gini_index<span class="sc">:.4f}</span><span class="ss">)'</span>)</span>
+<span id="cb20-43"><a href="#cb20-43" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb20-44"><a href="#cb20-44" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
+<span id="cb20-45"><a href="#cb20-45" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb20-46"><a href="#cb20-46" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Index(['folioviv', 'foliohog', 'numren', 'est_dis', 'upm', 'factor', 'tam_loc',
+       'rururb', 'ent', 'ubica_geo', 'edad', 'sexo', 'parentesco', 'ic_rezedu',
+       'anac_e', 'inas_esc', 'niv_ed', 'ic_asalud', 'ic_segsoc', 'sa_dir',
+       'ss_dir', 's_salud', 'par', 'jef_ss', 'cony_ss', 'hijo_ss', 'pea',
+       'jub', 'pam', 'ing_pam', 'ic_cv', 'icv_pisos', 'icv_muros',
+       'icv_techos', 'icv_hac', 'ic_sbv', 'isb_agua', 'isb_dren', 'isb_luz',
+       'isb_combus', 'ic_ali_nc', 'id_men', 'tot_iaad', 'tot_iamen', 'ins_ali',
+       'ic_ali', 'lca', 'dch', 'plp_e', 'plp', 'pobreza', 'pobreza_e',
+       'pobreza_m', 'vul_car', 'vul_ing', 'no_pobv', 'i_privacion',
+       'carencias', 'carencias3', 'cuadrantes', 'prof1', 'prof_e1', 'profun',
+       'int_pob', 'int_pobe', 'int_vulcar', 'int_caren', 'tamhogesc', 'ictpc',
+       'ict', 'ing_mon', 'ing_lab', 'ing_ren', 'ing_tra', 'nomon', 'pago_esp',
+       'reg_esp', 'hli', 'discap'],
+      dtype='object')
+Índice de Gini: 0.4235</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Proyecto%20Anàlisis%20Nùmerico%20Final_files/figure-html/cell-20-output-2.png" width="759" height="567" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Índice de Theil</strong></p>
+<div id="d0956f53" class="cell" data-execution_count="20">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Solo carga la columna de ingreso per cápita (cambia 'ictpc' si tu columna tiene otro nombre)</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="vs">r'C:/Users/maxim/OneDrive/Documentos/Análisis Númerico/Base final/pobreza22.csv'</span>, usecols<span class="op">=</span>[<span class="st">'ictpc'</span>])</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>ingresos <span class="op">=</span> df[<span class="st">'ictpc'</span>].dropna().astype(<span class="bu">float</span>)</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>ingresos <span class="op">=</span> ingresos[ingresos <span class="op">&gt;</span> <span class="dv">0</span>]</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> theil_index(x):</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> np.array(x)</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>    mean <span class="op">=</span> np.mean(x)</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> mean <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> np.nan</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>    theil <span class="op">=</span> np.<span class="bu">sum</span>((x<span class="op">/</span>mean) <span class="op">*</span> np.log(x<span class="op">/</span>mean)) <span class="op">/</span> <span class="bu">len</span>(x)</span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> theil</span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>theil_t <span class="op">=</span> theil_index(ingresos)</span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Índice de Theil-T: </span><span class="sc">{</span>theil_t<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> lorenz_curve(array):</span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>    array <span class="op">=</span> np.sort(array)</span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>    cum_income <span class="op">=</span> np.cumsum(array)</span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a>    cum_income <span class="op">=</span> np.insert(cum_income, <span class="dv">0</span>, <span class="dv">0</span>)</span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a>    cum_income <span class="op">=</span> cum_income <span class="op">/</span> cum_income[<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> cum_income</span>
+<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a>lorenz <span class="op">=</span> lorenz_curve(ingresos)</span>
+<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="bu">len</span>(lorenz) <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb22-30"><a href="#cb22-30" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="dv">1</span>, n <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb22-31"><a href="#cb22-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-32"><a href="#cb22-32" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
+<span id="cb22-33"><a href="#cb22-33" aria-hidden="true" tabindex="-1"></a>plt.plot(x, lorenz, drawstyle<span class="op">=</span><span class="st">'steps-post'</span>, label<span class="op">=</span><span class="st">'Curva de Lorenz'</span>)</span>
+<span id="cb22-34"><a href="#cb22-34" aria-hidden="true" tabindex="-1"></a>plt.plot([<span class="dv">0</span>, <span class="dv">1</span>], [<span class="dv">0</span>, <span class="dv">1</span>], <span class="st">'k--'</span>, label<span class="op">=</span><span class="st">'Igualdad perfecta'</span>)</span>
+<span id="cb22-35"><a href="#cb22-35" aria-hidden="true" tabindex="-1"></a>plt.fill_between(x, lorenz, x, color<span class="op">=</span><span class="st">"skyblue"</span>, alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb22-36"><a href="#cb22-36" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Proporción acumulada de la población'</span>)</span>
+<span id="cb22-37"><a href="#cb22-37" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Proporción acumulada del ingreso'</span>)</span>
+<span id="cb22-38"><a href="#cb22-38" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="ss">f'Curva de Lorenz</span><span class="ch">\n</span><span class="ss">Índice de Theil-T: </span><span class="sc">{</span>theil_t<span class="sc">:.4f}</span><span class="ss">'</span>)</span>
+<span id="cb22-39"><a href="#cb22-39" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb22-40"><a href="#cb22-40" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
+<span id="cb22-41"><a href="#cb22-41" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb22-42"><a href="#cb22-42" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Índice de Theil-T: 0.3664</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Proyecto%20Anàlisis%20Nùmerico%20Final_files/figure-html/cell-21-output-2.png" width="759" height="568" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="conclusiones" class="level1">
+<h1>Conclusiones</h1>
+<p>En este trabajo se replicó la metodología de CONEVAL para la medición multidimensional de la pobreza, implementando cada uno de los indicadores sociales y el cálculo final de pobreza a partir de bases de datos reales. Este enfoque permite identificar de manera integral las privaciones que enfrenta la población, proporcionando información clave para el diseño de políticas públicas.</p>
+<p>La medición de la pobreza y la desigualdad son dos enfoques complementarios para analizar el bienestar social. Mientras que la pobreza multidimensional identifica a la población que no alcanza ciertos umbrales mínimos de bienestar y derechos sociales, los índices de desigualdad (Gini y Theil) permiten evaluar cómo se distribuye el ingreso entre toda la población.</p>
+<p>En este análisis, el índice de Gini y el índice de Theil calculados a partir de los ingresos per cápita muestran el grado de concentración del ingreso. Un valor alto de estos índices indica que, aunque una parte de la población supere los umbrales de pobreza, la distribución del ingreso puede seguir siendo inequitativa. Por lo tanto, es fundamental considerar ambos tipos de indicadores para diseñar políticas públicas que no solo reduzcan la pobreza, sino que también promuevan una mayor equidad social.</p>
+</section>
+<section id="referencias" class="level1">
+<h1>Referencias</h1>
+<ul>
+<li>Consejo Nacional de Evaluación de la Política de Desarrollo Social (CONEVAL). “Metodología para la medición multidimensional de la pobreza en México”. Disponible en: https://www.coneval.org.mx/Medicion/Paginas/Metodologia.aspx</li>
+<li>INEGI. Encuesta Nacional de Ingresos y Gastos de los Hogares (ENIGH).</li>
+<li>Documentación y diccionarios de variables de las bases de datos utilizadas.</li>
+</ul>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

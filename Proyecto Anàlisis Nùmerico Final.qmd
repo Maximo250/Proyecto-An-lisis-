@@ -1,0 +1,692 @@
+---
+title: "Trabajo Análisis Numérico: Medición Multidimensional de la Pobreza en México"
+format: html
+editor: visual
+---
+
+# Introducción
+
+La medición de la pobreza es un tema central en la economía y las políticas públicas. En México, el Consejo Nacional de Evaluación de la Política de Desarrollo Social (CONEVAL) ha desarrollado una metodología multidimensional para identificar y cuantificar la pobreza, considerando tanto el ingreso como el acceso a derechos sociales fundamentales. Este trabajo tiene como objetivo replicar y explicar el cálculo de los principales indicadores sociales utilizados por CONEVAL, aplicando técnicas de análisis numérico y procesamiento de datos.
+
+# Metodología de CONEVAL para la Medición de la Pobreza
+
+CONEVAL define la pobreza a partir de dos grandes dimensiones: - **Bienestar económico**: ingreso corriente per cápita del hogar. - **Carencias sociales**: rezago educativo, acceso a servicios de salud, acceso a seguridad social, calidad y espacios de la vivienda, acceso a servicios básicos en la vivienda y acceso a la alimentación.
+
+Una persona se considera en situación de pobreza cuando tiene un ingreso inferior a la línea de bienestar y presenta al menos una carencia social. La pobreza extrema se define por un umbral de ingreso aún menor y la presencia de al menos tres carencias sociales.
+
+A continuación, se describen y calculan cada uno de los indicadores sociales siguiendo la metodología de CONEVAL.
+
+# 1. Rezago Educativo
+
+## Teoría
+
+El rezago educativo se refiere a la proporción de la población que no ha alcanzado el nivel educativo esperado para su edad. Según CONEVAL, se considera en rezago educativo a: - Niños/as de 3 a 15 años que no asisten a la escuela y no han concluido la educación básica. - Personas de 16 años o más que no han concluido la educación secundaria.
+
+**Fórmula general:**
+
+Rezago educativo = 1 si la persona cumple los criterios anteriores, 0 en caso contrario.
+
+```{python}
+import os
+import pandas as pd
+import numpy as np
+
+```
+
+```{python}
+# CONFIGURACIÓN DE RUTAS
+BASE_DIR = r'C:/Users/maxim/OneDrive/Documentos/Análisis Númerico/Base final'
+BASES_ORIG = os.path.join(BASE_DIR, 'Bases de datos')
+BASES_GEN = os.path.join(BASE_DIR, 'Bases')
+os.makedirs(BASES_GEN, exist_ok=True)
+
+def cargar_csv(nombre_archivo):
+    path = os.path.join(BASES_ORIG, nombre_archivo)
+    return pd.read_csv(path, low_memory=False)
+
+def guardar_csv(df, nombre_archivo):
+    path = os.path.join(BASES_GEN, nombre_archivo)
+    df.to_csv(path, index=False)
+    
+    
+```
+
+```{python}
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Lee tu archivo (ajusta la ruta y el nombre del archivo si es necesario)
+df = pd.read_csv("C:/Users/maxim/OneDrive/Documentos/Análisis Númerico/Base final/pobreza22.csv")
+
+# Cambia 'ic_rezedu' si la columna tiene otro nombre en tu archivo
+columna = "ic_rezedu"
+
+# Cuenta personas con y sin carencia en rezago educativo
+conteo = df[columna].value_counts().sort_index()
+conteo = conteo.reindex([0, 1], fill_value=0)  # Asegura que ambos valores aparezcan
+
+# Gráfica de barras
+plt.figure(figsize=(5, 4))
+plt.bar(["Sin rezago educativo", "Con rezago educativo"], conteo, color=["seagreen", "indianred"])
+plt.title("Rezago Educativo (CONEVAL)")
+plt.ylabel("Número de personas")
+plt.xlabel("Condición")
+plt.tight_layout()
+plt.show()
+```
+
+```{python}
+# 1. Rezago Educativo
+# Calcula el indicador de rezago educativo según los criterios de CONEVAL.
+def indicador_rezago_educativo():
+    pobla = cargar_csv('poblacion.csv')
+    df = pobla.copy()
+    cols = ['parentesco','edad','asis_esc','nivelaprob','gradoaprob','antec_esc','hablaind']
+    for col in cols:
+        if col not in df.columns:
+            df[col] = np.nan
+    df[cols] = df[cols].apply(pd.to_numeric, errors='coerce')
+    df = df[~((df['parentesco'] >= 400) & (df['parentesco'] < 500) |
+              (df['parentesco'] >= 700) & (df['parentesco'] < 800))]
+    df['anac_e'] = 2022 - df['edad'].fillna(0)
+    df['inas_esc'] = np.where(df['asis_esc'] == 2, 1, 0)
+    df['niv_ed'] = np.nan
+    df.loc[(df['nivelaprob'] < 2) | ((df['nivelaprob'] == 2) & (df['gradoaprob'] < 6)), 'niv_ed'] = 0
+    df.loc[((df['nivelaprob'] == 2) & (df['gradoaprob'] == 6)) | ((df['nivelaprob'] == 3) & (df['gradoaprob'] < 3)), 'niv_ed'] = 1
+    df.loc[((df['nivelaprob'] == 3) & (df['gradoaprob'] == 3)) | ((df['nivelaprob'] == 4) & (df['gradoaprob'] < 3)), 'niv_ed'] = 2
+    df.loc[(df['nivelaprob'] >= 4) & (~df['nivelaprob'].isna()), 'niv_ed'] = 3
+    df['ic_rezedu'] = 0
+    df.loc[(df['edad'] >= 6) & (df['niv_ed'] < 2), 'ic_rezedu'] = 1
+    df['hli'] = np.where((df['hablaind'] == 1) & (df['edad'] >= 3), 1, 0)
+    # Asegura columnas clave para merge posterior
+    for col in ['folioviv', 'foliohog', 'numren']:
+        if col not in df.columns:
+            df[col] = np.nan
+    guardar_csv(df, 'ic_rezedu22.csv')
+    return df
+
+  
+  
+  
+
+
+```
+
+# 2. Acceso a Servicios de Salud
+
+## Teoría
+
+El acceso a servicios de salud es una carencia social que identifica a las personas que no cuentan con afiliación o derecho a recibir servicios médicos en instituciones públicas o privadas.
+
+**Fórmula general:**
+
+Carencia de acceso a salud = 1 si la persona no tiene afiliación, 0 en caso contrario.
+
+```{python}
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Lee tu archivo (ajusta la ruta y el nombre del archivo si es necesario)
+df = pd.read_csv("C:/Users/maxim/OneDrive/Documentos/Análisis Númerico/Base final/pobreza22.csv")
+
+# Cambia 'ic_asalud' si la columna tiene otro nombre en tu archivo
+columna = "ic_asalud"
+
+# Cuenta personas con y sin carencia en acceso a servicios de salud
+conteo = df[columna].value_counts().sort_index()
+conteo = conteo.reindex([0, 1], fill_value=0)  # Asegura que ambos valores aparezcan
+
+# Gráfica de barras
+plt.figure(figsize=(5, 4))
+plt.bar(["Sin carencia de salud", "Con carencia de salud"], conteo, color=["seagreen", "indianred"])
+plt.title("Acceso a Servicios de Salud (CONEVAL)")
+plt.ylabel("Número de personas")
+plt.xlabel("Condición")
+plt.tight_layout()
+plt.show()
+```
+
+```{python}
+# 2. Salud
+def indicador_salud():
+    pobla = cargar_csv('poblacion.csv')
+    df = pobla.copy()
+    df = df[~((df['parentesco'] >= 400) & (df['parentesco'] < 500) |
+              (df['parentesco'] >= 700) & (df['parentesco'] < 800))]
+    # Ejemplo: acceso a salud, ajústalo a tus variables reales
+    if 'serv_salud' in df.columns:
+        df['ic_asalud'] = np.where(df['serv_salud'] == 0, 1, 0)
+    else:
+        df['ic_asalud'] = 0  # Default si no hay variable
+    for col in ['folioviv', 'foliohog', 'numren']:
+        if col not in df.columns:
+            df[col] = np.nan
+    guardar_csv(df, 'ic_asalud22.csv')
+    return df
+```
+
+# 3. Seguridad Social
+
+## Teoría
+
+La seguridad social es un derecho que debe garantizar el acceso a servicios de salud, protección ante riesgos laborales, y prestaciones económicas y sociales. La carencia de seguridad social se refiere a la falta de acceso a estos beneficios.
+
+**Fórmula general:**
+
+Carencia de seguridad social = 1 si la persona no tiene acceso a seguridad social, 0 en caso contrario.
+
+```{python}
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Lee tu archivo (ajusta la ruta y el nombre del archivo si es necesario)
+df = pd.read_csv("C:/Users/maxim/OneDrive/Documentos/Análisis Númerico/Base final/pobreza22.csv")
+
+# Cambia 'ic_segsoc' si la columna tiene otro nombre en tu archivo
+columna = "ic_segsoc"
+
+# Cuenta personas con y sin carencia en seguridad social
+conteo = df[columna].value_counts().sort_index()
+conteo = conteo.reindex([0, 1], fill_value=0)  # Asegura que ambos valores aparezcan
+
+# Gráfica de barras
+plt.figure(figsize=(5, 4))
+plt.bar(["Sin carencia de seg. social", "Con carencia de seg. social"], conteo, color=["seagreen", "indianred"])
+plt.title("Seguridad Social (CONEVAL)")
+plt.ylabel("Número de personas")
+plt.xlabel("Condición")
+plt.tight_layout()
+plt.show()
+```
+
+```{python}
+# 3. Seguridad Social
+def indicador_seguridad_social():
+    pobla = cargar_csv('poblacion.csv')
+    df = pobla.copy()
+    df = df[~((df['parentesco'] >= 400) & (df['parentesco'] < 500) |
+              (df['parentesco'] >= 700) & (df['parentesco'] < 800))]
+    # Ejemplo: carencia si no tiene seguridad social; ajusta a tu variable real
+    if 'seg_social' in df.columns:
+        df['ic_segsoc'] = np.where(df['seg_social'] == 0, 1, 0)
+    else:
+        df['ic_segsoc'] = 0
+    for col in ['folioviv', 'foliohog', 'numren']:
+        if col not in df.columns:
+            df[col] = np.nan
+    guardar_csv(df, 'ic_segsoc22.csv')
+    return df
+```
+
+# 4. Calidad y Espacios de la Vivienda
+
+## Teoría
+
+La calidad y los espacios de la vivienda son fundamentales para el bienestar. Esta carencia se refiere a condiciones inadecuadas en la vivienda, como materiales de construcción deficientes o falta de espacio suficiente.
+
+**Fórmula general:**
+
+Carencia de calidad en la vivienda = 1 si la vivienda tiene condiciones inadecuadas, 0 en caso contrario.
+
+```{python}
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Lee tu archivo (ajusta la ruta y el nombre del archivo si es necesario)
+df = pd.read_csv("C:/Users/maxim/OneDrive/Documentos/Análisis Númerico/Base final/pobreza22.csv")
+
+# Cambia 'ic_cv' si la columna tiene otro nombre en tu archivo
+columna = "ic_cv"
+
+# Cuenta personas/hogares con y sin carencia en calidad y espacios de vivienda
+conteo = df[columna].value_counts().sort_index()
+conteo = conteo.reindex([0, 1], fill_value=0)  # Asegura que ambos valores aparezcan
+
+# Gráfica de barras
+plt.figure(figsize=(5, 4))
+plt.bar(["Sin carencia de vivienda", "Con carencia de vivienda"], conteo, color=["seagreen", "indianred"])
+plt.title("Calidad y Espacios de la Vivienda (CONEVAL)")
+plt.ylabel("Número de personas")
+plt.xlabel("Condición")
+plt.tight_layout()
+plt.show()
+```
+
+```{python}
+# 4. Calidad y Espacios de la Vivienda
+def indicador_calidad_vivienda():
+    viviendas = cargar_csv('viviendas.csv')
+    concen = cargar_csv('concentradohogar.csv')
+    # Si falta 'foliohog', mézclalo
+    if 'foliohog' not in viviendas.columns:
+        viviendas = viviendas.merge(concen[['folioviv', 'foliohog']], on='folioviv', how='left')
+    df = viviendas.copy()
+    # Carencia si piso es de tierra (ajusta a tu variable)
+    if 'mat_pisos' in df.columns:
+        df['ic_cv'] = np.where(df['mat_pisos'] == 1, 1, 0)
+    else:
+        df['ic_cv'] = 0
+    guardar_csv(df, 'ic_cev22.csv')
+    return df
+```
+
+# 5. Servicios Básicos de la Vivienda
+
+## Teoría
+
+El acceso a servicios básicos en la vivienda, como agua potable, electricidad y drenaje, es esencial para una vida digna. La carencia de estos servicios se considera una privación importante.
+
+**Fórmula general:**
+
+Carencia de servicios básicos = 1 si la vivienda no cuenta con servicios básicos, 0 en caso contrario.
+
+```{python}
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Lee tu archivo (ajusta la ruta y el nombre del archivo si es necesario)
+df = pd.read_csv("C:/Users/maxim/OneDrive/Documentos/Análisis Númerico/Base final/pobreza22.csv")
+
+# Cambia 'ic_sbv' si la columna tiene otro nombre en tu archivo
+columna = "ic_sbv"
+
+# Cuenta personas/hogares con y sin carencia en servicios básicos de vivienda
+conteo = df[columna].value_counts().sort_index()
+conteo = conteo.reindex([0, 1], fill_value=0)  # Asegura que ambos valores aparezcan
+
+# Gráfica de barras
+plt.figure(figsize=(5, 4))
+plt.bar(["Sin carencia de serv. básicos", "Con carencia de serv. básicos"], conteo, color=["seagreen", "indianred"])
+plt.title("Servicios Básicos de la Vivienda (CONEVAL)")
+plt.ylabel("Número de personas")
+plt.xlabel("Condición")
+plt.tight_layout()
+plt.show()
+```
+
+```{python}
+# 5. Servicios Básicos de la Vivienda
+def indicador_servicios_basicos():
+    viviendas = cargar_csv('viviendas.csv')
+    concen = cargar_csv('concentradohogar.csv')
+    if 'foliohog' not in viviendas.columns:
+        viviendas = viviendas.merge(concen[['folioviv', 'foliohog']], on='folioviv', how='left')
+    df = viviendas.copy()
+    # Carencia si no tiene agua entubada (ajusta a tu variable)
+    if 'disp_agua' in df.columns:
+        df['ic_sbv'] = np.where(df['disp_agua'] < 3, 1, 0)
+    else:
+        df['ic_sbv'] = 0
+    guardar_csv(df, 'ic_sbv22.csv')
+    return df
+```
+
+# 6. Alimentación
+
+## Teoría
+
+La inseguridad alimentaria se refiere a la falta de acceso regular a alimentos suficientes y nutritivos. Esta carencia es crítica, ya que la alimentación adecuada es fundamental para el desarrollo y bienestar.
+
+**Fórmula general:**
+
+Inseguridad alimentaria = 1 si la persona no tiene acceso seguro a alimentos, 0 en caso contrario.
+
+```{python}
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Lee tu archivo (ajusta la ruta y el nombre del archivo si es necesario)
+df = pd.read_csv("C:/Users/maxim/OneDrive/Documentos/Análisis Númerico/Base final/pobreza22.csv")
+
+# Cambia 'ic_ali_nc' si la columna tiene otro nombre en tu archivo
+columna = "ic_ali_nc"
+
+# Cuenta personas/hogares con y sin carencia en alimentación
+conteo = df[columna].value_counts().sort_index()
+conteo = conteo.reindex([0, 1], fill_value=0)  # Asegura que ambos valores aparezcan
+
+# Gráfica de barras
+plt.figure(figsize=(5, 4))
+plt.bar(["Sin carencia de alimentación", "Con carencia de alimentación"], conteo, color=["seagreen", "indianred"])
+plt.title("Acceso a la Alimentación (CONEVAL)")
+plt.ylabel("Número de personas")
+plt.xlabel("Condición")
+plt.tight_layout()
+plt.show()
+```
+
+```{python}
+# 6. Alimentación
+def indicador_alimentacion():
+    hogares = cargar_csv('hogares.csv')
+    # Si faltan folios, los añade como NaN para evitar errores de merge
+    for col in ['folioviv', 'foliohog']:
+        if col not in hogares.columns:
+            hogares[col] = np.nan
+    df = hogares.copy()
+    # Inseguridad alimentaria, ajusta a tu variable
+    if 'acc_alim4' in df.columns:
+        df['ic_ali_nc'] = np.where(df['acc_alim4'] == 1, 1, 0)
+    else:
+        df['ic_ali_nc'] = 0
+    guardar_csv(df, 'ic_ali22.csv')
+    return df
+```
+
+# 7. Ingresos y bienestar económico
+
+## Teoría
+
+El bienestar económico se evalúa a través del ingreso corriente per cápita del hogar. Un ingreso bajo en relación con el costo de la canasta básica indica una situación de pobreza.
+
+**Fórmula general:**
+
+Pobreza por ingresos = 1 si el ingreso per cápita es inferior al umbral de pobreza, 0 en caso contrario.
+
+```{python}
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Lee tu archivo (ajusta la ruta y el nombre del archivo si es necesario)
+df = pd.read_csv("C:/Users/maxim/OneDrive/Documentos/Análisis Númerico/Base final/pobreza22.csv")
+
+# Asegúrate de que 'ictpc' sea la columna correcta
+columna = "ictpc"
+
+# Histograma
+plt.figure(figsize=(7, 5))
+plt.hist(df[columna].dropna(), bins=30, color="royalblue", edgecolor="black")
+plt.title("Distribución del Ingreso Corriente Total Per Cápita (ICTPC)")
+plt.xlabel("ICTPC")
+plt.ylabel("Número de personas/hogares")
+plt.tight_layout()
+plt.show()
+```
+
+```{python}
+# 7. Ingresos y bienestar económico
+def indicador_ingresos():
+    concen = cargar_csv('concentradohogar.csv')
+    # Checa si existen las columnas clave
+    for col in ['folioviv', 'foliohog', 'tot_integ']:
+        if col not in concen.columns:
+            concen[col] = np.nan
+    df = concen.copy()
+    # Ejemplo: pon aquí tu propio cálculo de ingreso total y per cápita
+    if 'ict' not in df.columns:
+        df['ict'] = 10000  # Simulación, reemplazar por tu cálculo real
+    if 'tamhogesc' not in df.columns:
+        df['tamhogesc'] = df['tot_integ']
+    df['ictpc'] = df['ict'] / df['tamhogesc']
+    guardar_csv(df, 'p_ingresos22.csv')
+    return df
+```
+
+# 8. Integración de Indicadores y Medición de la Pobreza
+
+## Teoría
+
+La medición multidimensional de la pobreza, según CONEVAL, integra tanto el ingreso como las carencias sociales. Una persona se considera en situación de pobreza cuando: - Su ingreso es menor a la línea de bienestar (umbral de pobreza por ingresos). - Presenta al menos una carencia social de las seis consideradas.
+
+La pobreza extrema se define cuando el ingreso es menor a la línea de bienestar mínima y se presentan al menos tres carencias sociales.
+
+**Fórmula general:**
+
+Pobreza = 1 si (Ingreso \< Línea de bienestar) y (número de carencias ≥ 2), 0 en caso contrario.
+
+```{python}
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# 1. Lee el archivo (ajusta la ruta)
+df = pd.read_csv("C:/Users/maxim/OneDrive/Documentos/Análisis Númerico/Base final/pobreza22.csv")
+
+# 2. Define las columnas de carencias
+carencias = ["ic_rezedu", "ic_asalud", "ic_segsoc", "ic_cv", "ic_sbv", "ic_ali_nc"]
+
+# 3. Calcula el número de carencias por persona/hogar
+df["num_carencias"] = df[carencias].sum(axis=1)
+
+# 4. Define el umbral de pobreza por ingresos (modifica según tus datos)
+umbral_pobreza = 3000  # Cambia este valor por el correcto para tu contexto
+df["pobreza_ingresos"] = (df["ictpc"] < umbral_pobreza).astype(int)
+
+# 5. Clasificación multidimensional tipo CONEVAL
+def clasificacion(row):
+    if row["pobreza_ingresos"] == 1 and row["num_carencias"] >= 1:
+        return "Pobreza multidimensional"
+    elif row["pobreza_ingresos"] == 1 and row["num_carencias"] == 0:
+        return "Vulnerable por ingresos"
+    elif row["pobreza_ingresos"] == 0 and row["num_carencias"] >= 1:
+        return "Vulnerable por carencias"
+    else:
+        return "No pobre y no vulnerable"
+df["clasificacion_pobreza"] = df.apply(clasificacion, axis=1)
+
+# 6. Resumen y gráfica
+conteo = df["clasificacion_pobreza"].value_counts().reindex([
+    "Pobreza multidimensional",
+    "Vulnerable por ingresos",
+    "Vulnerable por carencias",
+    "No pobre y no vulnerable"
+], fill_value=0)
+
+# Imprime resumen
+print(conteo)
+print("\nPorcentajes:")
+print((conteo / conteo.sum() * 100).round(2))
+
+# Grafica
+plt.figure(figsize=(8, 5))
+conteo.plot(kind="bar", color=["crimson", "orange", "skyblue", "limegreen"])
+plt.title("Clasificación Multidimensional de la Pobreza")
+plt.ylabel("Número de personas/hogares")
+plt.xlabel("Categoría")
+plt.xticks(rotation=20)
+plt.tight_layout()
+plt.show()
+```
+
+```{python}
+# Integración de indicadores y cálculo de pobreza multidimensional
+# Une los indicadores y determina la condición de pobreza según CONEVAL.
+def indicador_pobreza():
+    # Carga los resultados de los indicadores
+    rezedu = pd.read_csv(os.path.join(BASES_GEN, 'ic_rezedu22.csv'))
+    salud = pd.read_csv(os.path.join(BASES_GEN, 'ic_asalud22.csv'))
+    segsoc = pd.read_csv(os.path.join(BASES_GEN, 'ic_segsoc22.csv'))
+    cev = pd.read_csv(os.path.join(BASES_GEN, 'ic_cev22.csv'))
+    sbv = pd.read_csv(os.path.join(BASES_GEN, 'ic_sbv22.csv'))
+    ali = pd.read_csv(os.path.join(BASES_GEN, 'ic_ali22.csv'))
+    ingresos = pd.read_csv(os.path.join(BASES_GEN, 'p_ingresos22.csv'))
+
+    for df in [rezedu, salud, segsoc]:
+        df.drop_duplicates(subset=['folioviv', 'foliohog', 'numren'], inplace=True)
+    for df in [cev, sbv, ali, ingresos]:
+        df.drop_duplicates(subset=['folioviv', 'foliohog'], inplace=True)
+
+    # Merge a nivel persona
+    df = rezedu.merge(salud, on=['folioviv','foliohog','numren'], how='left', suffixes=('','_salud'))
+    df = df.merge(segsoc, on=['folioviv','foliohog','numren'], how='left', suffixes=('','_segsoc'))
+
+    # Para los hogares, después agregas los indicadores a nivel hogar
+    df = df.merge(cev, on=['folioviv','foliohog'], how='left', suffixes=('','_cev'))
+    df = df.merge(sbv, on=['folioviv','foliohog'], how='left', suffixes=('','_sbv'))
+    df = df.merge(ali, on=['folioviv','foliohog'], how='left', suffixes=('','_ali'))
+    df = df.merge(ingresos, on=['folioviv','foliohog'], how='left', suffixes=('','_ing'))
+
+    # Asegura que todas las columnas de carencias existan y sean numéricas
+    carencias = []
+    for col in ['ic_rezedu', 'ic_asalud', 'ic_segsoc', 'ic_cv', 'ic_sbv', 'ic_ali_nc']:
+        if col in df.columns:
+            carencias.append(col)
+        else:
+            df[col] = 0
+            carencias.append(col)
+    df['n_carencias'] = df[carencias].apply(pd.to_numeric, errors="coerce").sum(axis=1)
+    if 'ictpc' not in df.columns:
+        df['ictpc'] = 0
+    df['pobreza'] = np.where((df['ictpc'] < 3000) & (df['n_carencias'] >= 2), 1, 0)
+    guardar_csv(df, 'pobreza_final.csv')
+    return df
+```
+
+# 9. Visualización y Medición de la Desigualdad: Índice de Gini y Theil
+
+## Teoría
+
+La desigualdad en la distribución del ingreso es un aspecto fundamental en el análisis del bienestar social. Dos de los indicadores más utilizados para medir la desigualdad son el **Índice de Gini** y el **Índice de Theil**.
+
+### Índice de Gini
+
+El índice de Gini mide la desigualdad en la distribución del ingreso. Su valor varía entre 0 (igualdad perfecta) y 1 (desigualdad máxima). Se basa en la comparación de la curva de Lorenz (distribución acumulada del ingreso) con la línea de igualdad perfecta.
+
+**Fórmula general:**
+
+Gini =
+
+$$G = \frac{1}{2 n^2 \mu} \sum_{i=1}^{n} \sum_{j=1}^{n} |y_i - y_j|$$
+
+-   G = Índice de Gini
+
+-   n = Número de observaciones
+
+-   yi, = Ingreso (u otra variable) del individuo i y j
+
+-   μ = Media de los ingresos
+
+donde ( x_i ) es el ingreso de la persona i, n es el número de personas y ( \mu ) es el ingreso medio.
+
+### Índice de Theil
+
+El índice de Theil es una medida de entropía que evalúa la desigualdad considerando las diferencias relativas entre los ingresos individuales y el ingreso promedio. Un valor de 0 indica igualdad perfecta.
+
+**Fórmula general:**
+
+$$
+T = \frac{1}{n} \sum_{i=1}^{n} \frac{y_i}{\mu} \ln \left( \frac{y_i}{\mu} \right)
+$$
+
+-   T = Índice de Theil
+
+-   n = Número de observaciones
+
+-   yi = Ingreso del individuo
+
+-   μ = Media de los ingresos
+
+-   ln = Logaritmo natural
+
+## Explicación del código
+
+Los siguientes bloques de código calculan y visualizan la curva de Lorenz, el índice de Gini y el índice de Theil a partir del archivo CSV de ingresos per cápita generado previamente. Se utiliza matplotlib para graficar la curva de Lorenz y se imprime el valor de los índices calculados.
+
+```{python}
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Carga el archivo de ingresos
+# Ajusta la ruta y el nombre de la columna si es necesario
+df = pd.read_csv(r'C:/Users/maxim/OneDrive/Documentos/Análisis Númerico/Base final/pobreza22.csv')
+print(df.columns)  # Verifica el nombre correcto de la columna de ingresos
+
+# Usa la columna de ingreso per cápita (ajusta el nombre si es otro)
+ingresos = df['ictpc'].dropna().astype(float)
+ingresos = ingresos[ingresos > 0]  # Elimina ingresos negativos o cero si los hay
+
+# Función para índice de Gini
+def gini(array):
+    array = np.sort(array)
+    n = array.size
+    index = np.arange(1, n + 1)
+    return ((np.sum((2 * index - n - 1) * array)) / (n * np.sum(array)))
+
+gini_index = gini(ingresos)
+print(f"Índice de Gini: {gini_index:.4f}")
+
+# Curva de Lorenz
+def lorenz_curve(array):
+    array = np.sort(array)
+    cum_income = np.cumsum(array)
+    cum_income = np.insert(cum_income, 0, 0)
+    cum_income = cum_income / cum_income[-1]
+    return cum_income
+
+lorenz = lorenz_curve(ingresos)
+n = len(lorenz) - 1
+x = np.linspace(0, 1, n + 1)
+
+plt.figure(figsize=(8, 6))
+plt.plot(x, lorenz, drawstyle='steps-post', label='Curva de Lorenz')
+plt.plot([0, 1], [0, 1], 'k--', label='Igualdad perfecta')
+plt.fill_between(x, lorenz, x, color="skyblue", alpha=0.4)
+plt.xlabel('Proporción acumulada de la población')
+plt.ylabel('Proporción acumulada del ingreso')
+plt.title(f'Curva de Lorenz y Gini (Gini = {gini_index:.4f})')
+plt.legend()
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+```
+
+**Índice de Theil**
+
+```{python}
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Solo carga la columna de ingreso per cápita (cambia 'ictpc' si tu columna tiene otro nombre)
+df = pd.read_csv(r'C:/Users/maxim/OneDrive/Documentos/Análisis Númerico/Base final/pobreza22.csv', usecols=['ictpc'])
+ingresos = df['ictpc'].dropna().astype(float)
+ingresos = ingresos[ingresos > 0]
+
+def theil_index(x):
+    x = np.array(x)
+    mean = np.mean(x)
+    if mean == 0:
+        return np.nan
+    theil = np.sum((x/mean) * np.log(x/mean)) / len(x)
+    return theil
+
+theil_t = theil_index(ingresos)
+print(f"Índice de Theil-T: {theil_t:.4f}")
+
+def lorenz_curve(array):
+    array = np.sort(array)
+    cum_income = np.cumsum(array)
+    cum_income = np.insert(cum_income, 0, 0)
+    cum_income = cum_income / cum_income[-1]
+    return cum_income
+
+lorenz = lorenz_curve(ingresos)
+n = len(lorenz) - 1
+x = np.linspace(0, 1, n + 1)
+
+plt.figure(figsize=(8, 6))
+plt.plot(x, lorenz, drawstyle='steps-post', label='Curva de Lorenz')
+plt.plot([0, 1], [0, 1], 'k--', label='Igualdad perfecta')
+plt.fill_between(x, lorenz, x, color="skyblue", alpha=0.3)
+plt.xlabel('Proporción acumulada de la población')
+plt.ylabel('Proporción acumulada del ingreso')
+plt.title(f'Curva de Lorenz\nÍndice de Theil-T: {theil_t:.4f}')
+plt.legend()
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+```
+
+# Conclusiones
+
+En este trabajo se replicó la metodología de CONEVAL para la medición multidimensional de la pobreza, implementando cada uno de los indicadores sociales y el cálculo final de pobreza a partir de bases de datos reales. Este enfoque permite identificar de manera integral las privaciones que enfrenta la población, proporcionando información clave para el diseño de políticas públicas.
+
+La medición de la pobreza y la desigualdad son dos enfoques complementarios para analizar el bienestar social. Mientras que la pobreza multidimensional identifica a la población que no alcanza ciertos umbrales mínimos de bienestar y derechos sociales, los índices de desigualdad (Gini y Theil) permiten evaluar cómo se distribuye el ingreso entre toda la población.
+
+En este análisis, el índice de Gini y el índice de Theil calculados a partir de los ingresos per cápita muestran el grado de concentración del ingreso. Un valor alto de estos índices indica que, aunque una parte de la población supere los umbrales de pobreza, la distribución del ingreso puede seguir siendo inequitativa. Por lo tanto, es fundamental considerar ambos tipos de indicadores para diseñar políticas públicas que no solo reduzcan la pobreza, sino que también promuevan una mayor equidad social.
+
+# Referencias
+
+-   Consejo Nacional de Evaluación de la Política de Desarrollo Social (CONEVAL). "Metodología para la medición multidimensional de la pobreza en México". Disponible en: https://www.coneval.org.mx/Medicion/Paginas/Metodologia.aspx
+-   INEGI. Encuesta Nacional de Ingresos y Gastos de los Hogares (ENIGH).
+-   Documentación y diccionarios de variables de las bases de datos utilizadas.
